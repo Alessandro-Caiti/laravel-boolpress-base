@@ -16,8 +16,11 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::all();
-        // dd($posts);
         return view('posts.index', compact('posts'));
+
+        // test post pubblicati
+        // $posts = Post::where('published', 1)->get();
+        // return view('posts.published', compact('posts'));
     }
 
     /**
