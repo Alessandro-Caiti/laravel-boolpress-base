@@ -20,6 +20,7 @@ class CreatePostsTable extends Migration
             $table->string('title', 100);
             $table->text('img');
             $table->text('body');
+            $table->boolean('published');
             $table->timestamps();
         });
     }
