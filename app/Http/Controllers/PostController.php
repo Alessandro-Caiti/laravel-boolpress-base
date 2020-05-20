@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Post;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -30,7 +31,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('posts.create');
     }
 
     /**
@@ -41,7 +42,14 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+        $data['slug'] = Str::slug($data['title'], '-');
+        // dd($data);
+        $post = new Post;
+        // $post->title = $data['title'];  metodo da inserire uno a uno, sotto metodo tutti
+        $post->fill($data);
+        $post->save();
+        dd($post);
     }
 
     /**

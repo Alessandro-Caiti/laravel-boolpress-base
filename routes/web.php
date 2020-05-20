@@ -17,3 +17,5 @@ Route::get('/', 'PostController@index')->name('posts.index');
 
 // rotta post pubblicati
 // Route::get('/published', 'PostController@index')->name('postsPublished.index');
+
+Route::resource('posts', 'PostController');
