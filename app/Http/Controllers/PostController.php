@@ -45,11 +45,24 @@ class PostController extends Controller
         $data = $request->all();
         $data['slug'] = Str::slug($data['title'], '-');
         // dd($data);
+
+        $request->validate([
+            'title' => 'required|string|max:100',
+            'body' => 'required',
+            'author' => 'required|string|max:80',
+            'published' => 'required'
+        ]);
+
         $post = new Post;
         // $post->title = $data['title'];  metodo da inserire uno a uno, sotto metodo tutti
         $post->fill($data);
-        $post->save();
-        dd($post);
+        $saved = $post->save();
+
+        if (!$saved) {
+            dd('errore di salvataggio');
+        }
+
+        return redirect()->route('posts.show', $post->id);
     }
 
     /**
@@ -60,7 +73,11 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        //
+        $post = Post::find($id);
+        if (empty($post)) {
+            abort('404');
+        }
+        return view('posts.show', compact('post'));
     }
 
     /**
