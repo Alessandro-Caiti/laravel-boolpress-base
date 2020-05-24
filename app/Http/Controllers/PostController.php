@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Post;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class PostController extends Controller
 {
@@ -43,15 +45,29 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $data['slug'] = Str::slug($data['title'], '-');
+        $now = Carbon::now()->format('Y-m-d-H-i-s');
+        $data['slug'] = Str::slug($data['title'], '-') . $now;
         // dd($data);
 
-        $request->validate([
+        $validator = Validator::make($data, [
             'title' => 'required|string|max:100',
             'body' => 'required',
             'author' => 'required|string|max:80',
             'published' => 'required'
         ]);
+
+        if ($validator->fails()) {
+            return redirect('posts.create')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+
+        // $request->validate([
+        //     'title' => 'required|string|max:100',
+        //     'body' => 'required',
+        //     'author' => 'required|string|max:80',
+        //     'published' => 'required'
+        // ]);
 
         $post = new Post;
         // $post->title = $data['title'];  metodo da inserire uno a uno, sotto metodo tutti
@@ -86,9 +102,13 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $post)
     {
-        //
+        if (empty($post)) {
+            abort('404');
+        }
+
+        return view('posts.edit', compact('post'));
     }
 
     /**
@@ -100,7 +120,37 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $post = Post::find($id);
+        if (empty($post)) {
+            abort('404');
+        }
+
+        $data = $request->all();
+        $now = Carbon::now()->format('Y-m-d-H-i-s');
+        $data['slug'] = Str::slug($data['title'], '-') . $now;
+        // dd($data);
+
+        $validator = Validator::make($data, [
+            'title' => 'required|string|max:100',
+            'body' => 'required',
+            'author' => 'required|string|max:80',
+            'published' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('posts.edit')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+
+        $post->fill($data);
+        $updated = $post->update();
+
+        if (!$updated) {
+            dd('errore di update');
+        }
+
+        return redirect()->route('posts.show', $post->id);
     }
 
     /**
@@ -111,6 +161,13 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post = Post::find($id);
+        if (empty($post)) {
+            abort('404');
+        }
+
+        $post->delete();
+
+        return redirect()->route('posts.index');
     }
 }

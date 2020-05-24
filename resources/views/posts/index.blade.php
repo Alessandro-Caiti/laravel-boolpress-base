@@ -15,6 +15,12 @@
                     <p>{{$post->body}}</p>
                 </div>
                 <p>{{$post->img}}</p>
+                <h5><a href="{{route('posts.edit', $post->id)}}">Modifica</a></h5>
+                <div><form action="{{route('posts.destroy', $post->id)}}" method="post">
+                    @method('DELETE')
+                    @csrf
+                    <button type="submit">Elimina</button>
+                </form> </div>
             </div>
         @endforeach
     </body>

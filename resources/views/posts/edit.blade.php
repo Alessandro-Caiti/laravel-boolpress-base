@@ -15,30 +15,30 @@
                 </ul>
             </div>
         @endif
-        <form action="{{route('posts.store')}}" method="post">
+        <form action="{{route('posts.update',$post->id)}}" method="post">
             @csrf
-            @method('POST')
+            @method('PUT')
             <div class="">
                 <label for="title">Titolo</label>
-                <input type="text" name="title" placeholder="Inserisci il titolo" value="{{old('title')}}">
+                <input type="text" name="title" placeholder="Inserisci il titolo" value="{{ (!empty(old('title'))) ? old('title') : $post->title}}">
             </div>
             <div class="">
                 <label for="title">Testo</label>
-                <textarea name="body" rows="10" cols="30" placeholder="Inserisci il testo">{{ (!empty(old('body'))) ? old('body') : 'Inserisci un testo' }}</textarea>
+                <textarea name="body" rows="10" cols="30" placeholder="Inserisci il testo">{{ (!empty(old('body'))) ? old('body') : $post->body}}</textarea>
             </div>
             <div class="">
                 <label for="title">Autore</label>
-                <input type="text" name="author" placeholder="Inserisci il nome dell'autore" value="{{old('author')}}">
+                <input type="text" name="author" placeholder="Inserisci il nome dell'autore" value="{{$post->author}}">
             </div>
             <div class="">
                 <label for="title">Immagine</label>
-                <input type="text" name="img" placeholder="Inserisci l'immagine" value="{{old('img')}}">
+                <input type="text" name="img" placeholder="Inserisci l'immagine" value="{{$post->img}}">
             </div>
             <div class="">
                 <label for="not-published">Non pubblicato</label>
-                <input type="radio" id="not-published" name="published" value="0" {{(old('published') == 0) ? 'checked' : ''}}>
+                <input type="radio" id="not-published" name="published" value="0" {{($post->published == 0) ? 'checked' : ''}}>
                 <label for="published">Pubblicato</label>
-                <input type="radio" id="published" name="published" value="1" {{(old('published') == 1) ? 'checked' : ''}}>
+                <input type="radio" id="published" name="published" value="1" {{($post->published == 1) ? 'checked' : ''}}>
             </div>
             <div class="">
                 <input type="submit" name="" value="Salva">
